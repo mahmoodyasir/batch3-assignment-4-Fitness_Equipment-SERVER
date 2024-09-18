@@ -10,5 +10,5 @@
 
 PORT=5000
 
-DATABASE_URL=mongodb+srv://yasir-a-2:yasir_12345@cluster1.b4j6irz.mongodb.net/assignment_2_db?retryWrites=true&w=majority&appName=Cluster1
+DATABASE_URL=your_database_srv_string_with_cluster
 
