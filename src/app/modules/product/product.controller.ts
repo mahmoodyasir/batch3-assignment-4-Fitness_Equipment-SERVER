@@ -19,6 +19,22 @@ const createProduct = catchAsync(async (req, res) => {
 });
 
 
+const updateProduct = catchAsync(async (req, res) => {
+    const { id } = req.params; 
+    const files = req.files as Express.Multer.File[]; 
+
+    const result = await ProductServices.updateProductInDB(id, req.body, files);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: "Product updated successfully",
+        data: result
+    });
+});
+
+
 export const ProductControllers = {
     createProduct,
+    updateProduct,
 }

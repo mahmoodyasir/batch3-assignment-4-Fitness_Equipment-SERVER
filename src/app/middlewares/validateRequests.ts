@@ -15,6 +15,7 @@ const validateRequest = (schema: AnyZodObject) => {
       body.stock_quantity = parseInt(body.stock_quantity, 10);
     }
 
+
     try {
       await schema.parseAsync(body);
       next();
