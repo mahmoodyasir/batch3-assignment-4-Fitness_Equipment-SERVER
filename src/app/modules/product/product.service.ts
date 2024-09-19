@@ -173,6 +173,18 @@ const getAllProductsFromDB = async (paginationParams: PaginationParams) => {
 };
 
 
+const getProductsByIDFromDB = async (id: string) => {
+
+    const product = await Product.findById(id);
+
+    if (!product) {
+        throw new AppError(httpStatus.NOT_FOUND, 'Product Not Found !');
+    };
+
+    return product;
+};
+
+
 const deleteProductFromDB = async (id: string) => {
 
     const product = await Product.findById(id);
@@ -191,5 +203,6 @@ export const ProductServices = {
     createProductIntoDB,
     updateProductInDB,
     getAllProductsFromDB,
-    deleteProductFromDB
+    deleteProductFromDB,
+    getProductsByIDFromDB
 }

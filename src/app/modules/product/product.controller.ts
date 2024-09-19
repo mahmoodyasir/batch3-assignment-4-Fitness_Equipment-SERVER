@@ -53,6 +53,21 @@ const getAllProducts = catchAsync(async (req, res) => {
 });
 
 
+
+const getProductByID = catchAsync(async (req, res) => {
+    const { id } = req.params;
+
+    const result = await ProductServices.getProductsByIDFromDB(id);
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Products retrieved successfully",
+        data: result,
+    });
+});
+
+
 const deleteProduct = catchAsync(async (req, res) => {
     const { id } = req.params;
 
@@ -71,5 +86,6 @@ export const ProductControllers = {
     createProduct,
     updateProduct,
     getAllProducts,
-    deleteProduct
+    deleteProduct,
+    getProductByID
 }
