@@ -170,10 +170,26 @@ const getAllProductsFromDB = async (paginationParams: PaginationParams) => {
     }
 
     return result;
+};
+
+
+const deleteProductFromDB = async (id: string) => {
+
+    const product = await Product.findById(id);
+
+    if (!product) {
+        throw new AppError(httpStatus.NOT_FOUND, 'Product Not Found !');
+    };
+
+    const result = await Product.findByIdAndDelete(id);
+
+    return result;
+
 }
 
 export const ProductServices = {
     createProductIntoDB,
     updateProductInDB,
     getAllProductsFromDB,
+    deleteProductFromDB
 }
