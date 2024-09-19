@@ -35,14 +35,22 @@ const updateProduct = catchAsync(async (req, res) => {
 
 
 const getAllProducts = catchAsync(async (req, res) => {
-    const { page, limit } = req.query;
 
-    const paginationParams = {
-        page: Number(page) || 1,
-        limit: Number(limit) || 10,
+    const { search, categories, minPrice, maxPrice, sortOrder } = req.body;
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+
+    const filterOptions = {
+        search: search || '',
+        categories: categories || [],
+        minPrice: minPrice || undefined,
+        maxPrice: maxPrice || undefined,
+        sortOrder: sortOrder || undefined,
+        page,
+        limit
     };
 
-    const result = await ProductServices.getAllProductsFromDB(paginationParams);
+    const result = await ProductServices.getAllProductsFromDB(filterOptions);
 
     sendResponse(res, {
         statusCode: 200,

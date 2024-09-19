@@ -19,7 +19,7 @@ router.put('/update-product/:id',
     ProductControllers.updateProduct
 );
 
-router.get('/all_products', ProductControllers.getAllProducts);
+router.post('/all_products', ProductControllers.getAllProducts);
 
 router.get('/product-details/:id', ProductControllers.getProductByID);
 

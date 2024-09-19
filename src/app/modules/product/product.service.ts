@@ -1,5 +1,5 @@
 import axios from "axios";
-import mongoose from "mongoose";
+import mongoose, { FilterQuery } from "mongoose";
 import config from "../../config";
 import { Product } from "./product.model";
 import { TProduct } from "./product.interface";
@@ -7,7 +7,13 @@ import AppError from "../../errors/AppError";
 import httpStatus from "http-status";
 
 
-interface PaginationParams {
+interface FilterParams {
+    search?: string;
+    categories?: string[];
+    minPrice?: number;
+    maxPrice?: number;
+    sortBy?: 'price' | 'name';
+    sortOrder?: 'asc' | 'desc';
     page?: number;
     limit?: number;
 }
@@ -149,13 +155,45 @@ const updateProductInDB = async (id: string, data: any, files?: Express.Multer.F
 
 
 
-const getAllProductsFromDB = async (paginationParams: PaginationParams) => {
+const getAllProductsFromDB = async (options: FilterParams) => {
 
-    const { page = 1, limit = 10 } = paginationParams;
+    const {
+        search,
+        categories,
+        minPrice,
+        maxPrice,
+        sortBy = 'price',
+        sortOrder,
+        page = 1,
+        limit = 10,
+    } = options;
+
+    const query: FilterQuery<any> = {};
+
+    if (search) {
+        query.name = { $regex: search, $options: 'i' };
+    }
+
+    if (categories && categories.length > 0) {
+        query.category = { $in: categories };
+    }
+
+    if (minPrice !== undefined || maxPrice !== undefined) {
+        query.price = {};
+        if (minPrice !== undefined) query.price.$gte = minPrice;
+        if (maxPrice !== undefined) query.price.$lte = maxPrice;
+    }
+
+    const sortOptions: any = {};
+    if (sortOrder)
+    {
+        sortOptions[sortBy] = sortOrder === 'asc' ? 1 : -1;
+    }
 
     const skip = (page - 1) * limit;
 
-    const products = await Product.find()
+    const products = await Product.find(query)
+        .sort(sortOptions)
         .skip(skip)
         .limit(limit)
         .exec();
