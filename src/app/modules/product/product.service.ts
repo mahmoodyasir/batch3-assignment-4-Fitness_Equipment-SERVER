@@ -7,12 +7,10 @@ import AppError from "../../errors/AppError";
 import httpStatus from "http-status";
 
 
-
-const extractImageIdFromUrl = (url: string): string => {
-    const urlParts = url.split('/');
-    return urlParts[urlParts.length - 1].split('.')[0]; // Extract ID part from the URL
-};
-
+interface PaginationParams {
+    page?: number;
+    limit?: number;
+}
 
 
 const createProductIntoDB = async (data: any, files?: Express.Multer.File[]) => {
@@ -85,7 +83,7 @@ const updateProductInDB = async (id: string, data: any, files?: Express.Multer.F
     try {
         session.startTransaction();
 
-        // Fetch the existing product
+
         const product = await Product.findById(id).session(session);
         if (!product) {
             throw new AppError(httpStatus.NOT_FOUND, 'Product Not Found !');
@@ -99,11 +97,11 @@ const updateProductInDB = async (id: string, data: any, files?: Express.Multer.F
             description: description || product.description,
             stock_quantity: stock_quantity || product.stock_quantity,
             category: category || product.category,
-            images: product.images 
+            images: product.images
         };
 
         if (deletedImages) {
-           
+
             const deleteImages = JSON.parse(deletedImages)
 
             if (deleteImages && deleteImages.length > 0) {
@@ -131,10 +129,10 @@ const updateProductInDB = async (id: string, data: any, files?: Express.Multer.F
             const imgbbResponses = await Promise.all(imageUploadPromises);
             const imageUrls = imgbbResponses.map(response => response.data.data.url);
 
-            updatedData.images = [...(updatedData.images || []), ...imageUrls]; 
+            updatedData.images = [...(updatedData.images || []), ...imageUrls];
         }
 
-   
+
         const updatedProduct = await Product.findByIdAndUpdate(id, updatedData, { new: true, session });
 
         await session.commitTransaction();
@@ -150,7 +148,32 @@ const updateProductInDB = async (id: string, data: any, files?: Express.Multer.F
 };
 
 
+
+const getAllProductsFromDB = async (paginationParams: PaginationParams) => {
+
+    const { page = 1, limit = 10 } = paginationParams;
+
+    const skip = (page - 1) * limit;
+
+    const products = await Product.find()
+        .skip(skip)
+        .limit(limit)
+        .exec();
+
+    const totalCount = await Product.countDocuments().exec();
+
+    const result = {
+        data: products,
+        total_product: totalCount,
+        page: page,
+        total_pages: Math.ceil(totalCount / limit)
+    }
+
+    return result;
+}
+
 export const ProductServices = {
     createProductIntoDB,
-    updateProductInDB
+    updateProductInDB,
+    getAllProductsFromDB,
 }

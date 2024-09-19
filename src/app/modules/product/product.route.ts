@@ -14,10 +14,11 @@ router.post('/create-product',
 
 
 router.put('/update-product/:id',
-    upload.array('images'),  
-    validateRequest(ProductValidation.productUpdateValidationSchema), 
-    ProductControllers.updateProduct 
-  );
+    upload.array('images'),
+    validateRequest(ProductValidation.productUpdateValidationSchema),
+    ProductControllers.updateProduct
+);
 
+router.get('/all_products', ProductControllers.getAllProducts);
 
 export const ProductRoutes = router;

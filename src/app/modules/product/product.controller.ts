@@ -20,8 +20,8 @@ const createProduct = catchAsync(async (req, res) => {
 
 
 const updateProduct = catchAsync(async (req, res) => {
-    const { id } = req.params; 
-    const files = req.files as Express.Multer.File[]; 
+    const { id } = req.params;
+    const files = req.files as Express.Multer.File[];
 
     const result = await ProductServices.updateProductInDB(id, req.body, files);
 
@@ -34,7 +34,27 @@ const updateProduct = catchAsync(async (req, res) => {
 });
 
 
+const getAllProducts = catchAsync(async (req, res) => {
+    const { page, limit } = req.query;
+
+    const paginationParams = {
+        page: Number(page) || 1,
+        limit: Number(limit) || 10,
+    };
+
+    const result = await ProductServices.getAllProductsFromDB(paginationParams);
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Products retrieved successfully",
+        data: result,
+    });
+});
+
+
 export const ProductControllers = {
     createProduct,
     updateProduct,
+    getAllProducts,
 }
