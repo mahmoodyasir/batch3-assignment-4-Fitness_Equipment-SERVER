@@ -16,6 +16,7 @@ interface FilterParams {
     sortOrder?: 'asc' | 'desc';
     page?: number;
     limit?: number;
+    allItems?: string;
 }
 
 
@@ -166,6 +167,7 @@ const getAllProductsFromDB = async (options: FilterParams) => {
         sortOrder,
         page = 1,
         limit = 10,
+        allItems
     } = options;
 
     const query: FilterQuery<any> = {};
@@ -192,19 +194,21 @@ const getAllProductsFromDB = async (options: FilterParams) => {
 
     const skip = (page - 1) * limit;
 
+    const totalCount = await Product.countDocuments().exec();
+
+
     const products = await Product.find(query)
         .sort(sortOptions)
         .skip(skip)
-        .limit(limit)
+        .limit(allItems === 'true' ? totalCount : limit)
         .exec();
-
-    const totalCount = await Product.countDocuments().exec();
+    
 
     const result = {
         data: products,
         total_product: totalCount,
         page: page,
-        total_pages: Math.ceil(totalCount / limit)
+        total_pages: Math.ceil(totalCount / (allItems === 'true' ? totalCount : limit))
     }
 
     return result;

@@ -39,6 +39,7 @@ const getAllProducts = catchAsync(async (req, res) => {
     const { search, categories, minPrice, maxPrice, sortOrder } = req.body;
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
+    const allItems = req.query.allItems as string
 
     const filterOptions = {
         search: search || '',
@@ -47,7 +48,8 @@ const getAllProducts = catchAsync(async (req, res) => {
         maxPrice: maxPrice || undefined,
         sortOrder: sortOrder || undefined,
         page,
-        limit
+        limit,
+        allItems
     };
 
     const result = await ProductServices.getAllProductsFromDB(filterOptions);
