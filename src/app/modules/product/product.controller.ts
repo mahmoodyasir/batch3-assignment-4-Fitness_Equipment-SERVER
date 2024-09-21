@@ -90,10 +90,25 @@ const deleteProduct = catchAsync(async (req, res) => {
 });
 
 
+
+const getAllUniqueCategories  = catchAsync(async (req, res) => {
+
+    const result = await await ProductServices.getAllUniqueCategoriesFromDB();
+
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: "Categories fetched successfully",
+        data: result,
+    });
+});
+
+
 export const ProductControllers = {
     createProduct,
     updateProduct,
     getAllProducts,
     deleteProduct,
-    getProductByID
+    getProductByID,
+    getAllUniqueCategories,
 }

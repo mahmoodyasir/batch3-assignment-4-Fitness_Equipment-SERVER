@@ -23,6 +23,8 @@ router.post('/all_products', ProductControllers.getAllProducts);
 
 router.get('/product-details/:id', ProductControllers.getProductByID);
 
+router.get('/categories', ProductControllers.getAllUniqueCategories);
+
 router.delete('/delete-product/:id', ProductControllers.deleteProduct);
 
 export const ProductRoutes = router;

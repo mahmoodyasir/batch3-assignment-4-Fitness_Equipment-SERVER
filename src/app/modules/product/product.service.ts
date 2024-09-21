@@ -237,10 +237,17 @@ const deleteProductFromDB = async (id: string) => {
 
 }
 
+
+const getAllUniqueCategoriesFromDB = async (): Promise<string[]> => {
+    const categories = await Product.distinct('category');
+    return categories;
+};
+
 export const ProductServices = {
     createProductIntoDB,
     updateProductInDB,
     getAllProductsFromDB,
     deleteProductFromDB,
-    getProductsByIDFromDB
+    getProductsByIDFromDB,
+    getAllUniqueCategoriesFromDB,
 }
