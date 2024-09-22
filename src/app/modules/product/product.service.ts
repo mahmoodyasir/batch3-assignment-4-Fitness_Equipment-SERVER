@@ -187,9 +187,11 @@ const getAllProductsFromDB = async (options: FilterParams) => {
     }
 
     const sortOptions: any = {};
-    if (sortOrder)
-    {
+    if (sortOrder) {
         sortOptions[sortBy] = sortOrder === 'asc' ? 1 : -1;
+    }
+    else {
+        sortOptions['createdAt'] = -1;
     }
 
     const skip = (page - 1) * limit;
@@ -202,7 +204,7 @@ const getAllProductsFromDB = async (options: FilterParams) => {
         .skip(skip)
         .limit(allItems === 'true' ? totalCount : limit)
         .exec();
-    
+
 
     const result = {
         data: products,
