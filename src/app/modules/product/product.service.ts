@@ -28,7 +28,7 @@ const createProductIntoDB = async (data: any, files?: Express.Multer.File[]) => 
 
         session.startTransaction();
 
-        const { name, price, description, stock_quantity, category } = data;
+        const { name, price, description, stock_quantity, category, featured } = data;
 
         let newProduct: TProduct;
 
@@ -55,6 +55,7 @@ const createProductIntoDB = async (data: any, files?: Express.Multer.File[]) => 
                 images: imageUrls,
                 stock_quantity,
                 category,
+                featured,
             };
         }
 
@@ -64,7 +65,8 @@ const createProductIntoDB = async (data: any, files?: Express.Multer.File[]) => 
                 price,
                 description,
                 stock_quantity,
-                category
+                category,
+                featured,
             };
         };
 
@@ -90,22 +92,25 @@ const updateProductInDB = async (id: string, data: any, files?: Express.Multer.F
     try {
         session.startTransaction();
 
-
+        
         const product = await Product.findById(id).session(session);
+        
         if (!product) {
             throw new AppError(httpStatus.NOT_FOUND, 'Product Not Found !');
         }
-
-        const { name, price, description, stock_quantity, category, deletedImages } = data;
-
+        
+        const { name, price, description, stock_quantity, category, featured, deletedImages } = data;
+        
         const updatedData: Partial<TProduct> = {
             name: name || product.name,
             price: price || product.price,
             description: description || product.description,
             stock_quantity: stock_quantity || product.stock_quantity,
             category: category || product.category,
-            images: product.images
+            images: product.images,
+            featured: featured || product.featured || false,
         };
+
 
         if (deletedImages) {
 

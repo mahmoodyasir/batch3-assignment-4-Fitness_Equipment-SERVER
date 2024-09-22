@@ -7,5 +7,6 @@ export interface TProduct {
     images?: string[]; 
     stock_quantity: number;
     category: string;
+    featured?: boolean;
   }
   

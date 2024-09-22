@@ -1,5 +1,6 @@
 import { model, Schema } from "mongoose";
 import { TProduct } from "./product.interface";
+import { boolean } from "zod";
 
 const productSchema = new Schema<TProduct>(
     {
@@ -28,6 +29,9 @@ const productSchema = new Schema<TProduct>(
 
         category: {
             type: String
+        },
+        featured: {
+            type: Boolean
         },
     },
     {

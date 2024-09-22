@@ -15,6 +15,12 @@ const validateRequest = (schema: AnyZodObject) => {
       body.stock_quantity = parseInt(body.stock_quantity, 10);
     }
 
+    if (body.featured) {
+      const value = body.featured;
+      const lowerCaseValue = value.toLowerCase();
+      body.featured = lowerCaseValue === 'true';
+    }
+
 
     try {
       await schema.parseAsync(body);
